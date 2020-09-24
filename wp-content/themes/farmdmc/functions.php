@@ -9,7 +9,7 @@
 
 if ( ! defined( '_S_VERSION' ) ) {
 	// Replace the version number of the theme on each release.
-	define( '_S_VERSION', '1.0.0' );
+	define( '_S_VERSION', '1.0.3' );
 }
 
 if ( ! function_exists( 'farmdmc_setup' ) ) :
@@ -104,6 +104,31 @@ if ( ! function_exists( 'farmdmc_setup' ) ) :
 endif;
 add_action( 'after_setup_theme', 'farmdmc_setup' );
 
+
+/**
+ *
+ * Extend Walker_Nav_Menu class to add bootstrap css classes to menu ul and li elements
+ *
+ */
+class FarmDMC_Menu_Walker extends Walker_Nav_Menu {
+	function start_el(&$output, $item, $depth=0, $args=null, $id=0) {
+		$output .= "<li class='" .  implode(' ', $item->classes) . " nav-item'>";
+		if ($item->url && $item->url != '#') {
+			$output .= '<a href="' . $item->url . '" class="nav-link">';
+		} else {
+			$output .= '<span>';
+		}
+
+		$output .= $item->title;
+
+		if ($item->url && $item->url != '#') {
+			$output .= '</a>';
+		} else {
+			$output .= '</span>';
+		}
+	}
+}
+
 /**
  * Set the content width in pixels, based on the theme's design and stylesheet.
  *
@@ -148,6 +173,13 @@ function farmdmc_scripts() {
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
+
+	wp_enqueue_style( 'bootstrap-style', get_template_directory_uri() . '/bootstrap/css/bootstrap.min.css' );
+	wp_enqueue_script( 'bootstrap-js' , get_template_directory_uri() . '/bootstrap/js/bootstrap.bundle.min.js', array('jquery') );
+
+	wp_enqueue_script('font-awesome', 'https://kit.fontawesome.com/55e02544f6.js');
+
+
 }
 add_action( 'wp_enqueue_scripts', 'farmdmc_scripts' );
 
